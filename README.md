@@ -171,3 +171,17 @@ Next, you can use the following resources to know more about beyond hello world 
 * [AWS Serverless Application Repository](https://aws.amazon.com/serverless/serverlessrepo/)
 * [Chalice Python Serverless framework](https://github.com/aws/chalice)
 * Sample Python with 3rd party dependencies, pipenv and Makefile: ``sam init --location https://github.com/aws-samples/cookiecutter-aws-sam-python``
+
+## ターミナルで実行
+> これでdeployしてuserpoolにユーザー作成して認証してIdToken取得してAuthorizationヘッダーつけてリクエストしてあげると上手く動きます.
+
+```
+$ curl -s https://xxxxxxxxxxxx.execute-api.ap-northeast-1.amazonaws.com/Prod/
+{"message":"Unauthorized"}
+
+$ aws cognito-idp initiate-auth --auth-flow USER_PASSWORD_AUTH --client-id xxxxxxxxxxxx --auth-parameters '{"USERNAME":"xxxxxxxx","PASSWORD":"xxxxxxxxx"}' | jq '.AuthenticationResult.IdToken'
+"eyJraWQiOiJ1NVwvOW........VFZuI48-FbrQGg"
+
+$ curl -s -H 'Authorization: eyJraWQiOiJ1NVwvOW........VFZuI48-FbrQGg' https://xxxxxxxxxxxx.execute-api.ap-northeast-1.amazonaws.com/Prod/
+{"message": "hello world", "location": "xxx.xxx.xxx.xxx"}
+```
